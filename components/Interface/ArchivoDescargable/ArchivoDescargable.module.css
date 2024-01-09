@@ -1,0 +1,21 @@
+.download {
+  border: 1px rgb(37, 37, 37, 0.25) solid;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 8px 10px;
+  width: 220px;
+  cursor: pointer;
+}
+.download:hover {
+  background-color: rgb(243, 243, 243);
+}
+.detail {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

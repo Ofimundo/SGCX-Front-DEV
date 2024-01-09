@@ -1,0 +1,14 @@
+.menu {
+  height: 100%;
+  border: none !important;
+  border-radius: 0 !important;
+}
+.menu_icon {
+  margin: 0 4px !important;
+}
+
+@media (width <= 425px) {
+  .items {
+    display: none !important;
+  }
+}

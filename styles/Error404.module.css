@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 115px);
+  flex-direction: column;
+}
+.container h1 {
+  font-size: 280px;
+  font-weight: 700;
+  margin: 0;
+  margin-bottom: -50px;
+  background: linear-gradient(
+    90deg,
+    rgba(46, 32, 150, 1) 0%,
+    rgba(227, 49, 79, 1) 100%
+  );
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+}
+.container h2 {
+  font-size: 40px;
+}
+@media only screen and (max-width: 1024px) {
+  .container h1 {
+    font-size: 180px;
+  }
+  .container h2 {
+    font-size: 30px;
+  }
+}
