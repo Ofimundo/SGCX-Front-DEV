@@ -12,3 +12,9 @@
     display: none !important;
   }
 }
+
+.notificaciones:hover {
+  border-radius: 0.5em;
+  cursor: pointer;
+  background: #e2ebf6;
+}

@@ -7,6 +7,5 @@ export * from "./EstadisticasAcceso";
 export * from "./ArchivoDescargable";
 export * from "./ModalPersonalizado";
 export * from "./DrawerPersonalizado";
-export * from "./GraficosPersonalizados";
 export * from "./EstadisticasPersonalizado";
 export * from "./GraficoAnilloPersonalizado";

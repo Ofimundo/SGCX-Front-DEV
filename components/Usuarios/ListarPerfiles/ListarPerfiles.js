@@ -93,12 +93,12 @@ export function ListarPerfiles(props) {
             <div className="ctn-card">
               <Titulo icono={"user"} texto={"EDITAR PERFIL DE USUARIO"} />
               <Form>
-                <Form.Group widths={"2"}>
+                <Form.Group>
                   <Form.Dropdown
+                    width={8}
                     name="usuario"
                     placeholder="Seleccionar o ingresar usuario"
                     search
-                    fluid
                     selection
                     selectOnBlur={false}
                     options={listarUsuarios}
@@ -135,8 +135,9 @@ export function ListarPerfiles(props) {
             <div className="ctn-card">
               <Titulo icono={"shield"} texto={"EDITAR FUNCIONES DEL PERFIL"} />
               <Form>
-                <Form.Group widths={"2"}>
+                <Form.Group>
                   <Form.Dropdown
+                    width={8}
                     name="perfil"
                     placeholder="Seleccionar o ingresar perfil"
                     search

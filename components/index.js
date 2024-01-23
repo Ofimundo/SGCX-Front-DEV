@@ -7,3 +7,4 @@ export * from "./MesaAyuda";
 export * from "./Clientes";
 
 export * from "./LoginForm";
+export * from "./Graficos";

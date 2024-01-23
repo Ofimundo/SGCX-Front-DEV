@@ -26,7 +26,7 @@ import {
   convertirMinutosAHorasYMinutos,
 } from "../../../Function";
 
-export default function TotalIncidencias() {
+export default function ParqueRegistrado() {
   const { data: session } = useSession();
   const router = useRouter();
   const pathname = usePathname();
@@ -44,32 +44,18 @@ export default function TotalIncidencias() {
   const onRecargar = () => setRecargar((prev) => !prev);
   const abrirCerrarDrawer = () => setMostrarDrawer((prev) => !prev);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setCargando(true);
-        const tickets = await listarTickets(router.query, session.id_token);
-        setFiltroTickets(tickets);
-      } catch (error) {
-        modal.error({
-          title: "Ups, algo salió mal",
-          content: error.message,
-        });
-      } finally {
-        setCargando(false);
-      }
-    })();
-  }, [recargar, searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const formikFiltros = useFormik({
     initialValues: initialValues(router.query),
     validationSchema: Yup.object().shape(validationSchema()),
     validateOnChange: false,
     onSubmit: async (formValue) => {
       try {
+        console.log(formValue);
+        /*
         router.push(generarURL(pathname, router.query, formValue), undefined, {
           shallow: false,
         });
+        */
       } catch (error) {
         modal.error({
           title: "Ups, algo salió mal",
@@ -78,12 +64,6 @@ export default function TotalIncidencias() {
       }
     },
   });
-
-  const registrarIncidencia = () => {
-    setTituloDrawer("Crear Ticket");
-    setContenidoDrawer(<IncidenciaFormulario onRecargar={onRecargar} />);
-    abrirCerrarDrawer();
-  };
 
   const columnas = [
     {
@@ -190,59 +170,9 @@ export default function TotalIncidencias() {
   ];
 
   const estadoTicket = [
-    { key: 1, text: "RECIBIDO", value: "1" },
-    { key: 3, text: "ASIGNADO", value: "3" },
-    { key: 4, text: "GESTIONANDO", value: "4" },
-    { key: 5, text: "RESUELTO", value: "5" },
-    { key: 6, text: "INCOMPLETO", value: "6" },
-    { key: 7, text: "DERIVADO OFITEC", value: "7" },
-    { key: 8, text: "ANULADO", value: "8" },
+    { key: 1, text: "VIGENTE", value: "1" },
+    { key: 2, text: "VENCIDO", value: "2" },
   ];
-  const periodoTicket = [
-    { key: 1, text: "HOY", value: "1" },
-    { key: 2, text: "AYER", value: "2" },
-    { key: 3, text: "ÚLTIMOS 7 DÍAS", value: "3" },
-    { key: 4, text: "ÚLTIMOS 30 DÍAS", value: "4" },
-    { key: 5, text: "ORIGEN DE LOS TIEMPOS", value: "5" },
-  ];
-  const responsables = [
-    { key: "aoyarce", text: "ANDY OYARCE", value: "aoyarce" },
-    { key: "bburgos", text: "BRIAN BURGOS", value: "bburgos" },
-    { key: "jgonzalezhu", text: "JORGE GONZALEZ HUERTA", value: "jgonzalezhu" },
-    { key: "kponce", text: "KATHERINE PONCE", value: "kponce" },
-    { key: "lkauer", text: "LUCY KAUER", value: "lkauer" },
-    { key: "rromero", text: "RICARDO ROMERO", value: "rromero" },
-    { key: "dgalvez", text: "DANIEL GALVEZ", value: "dgalvez" },
-    { key: "ncastaneda", text: "NICOLAS CASTAÑEDA", value: "ncastaneda" },
-  ];
-
-  const verDetalleTicket = async (ticket) => {
-    const detalle = await listarDetalleTicket(
-      ticket.idIncidencia,
-      session.id_token
-    );
-    const correos = await listarCorreosRespuesta(
-      ticket.idIncidencia,
-      session.id_token
-    );
-    setTituloDrawer(
-      <div className="btn-navbar between">
-        <label>Ticket {ticket.idIncidencia}</label>
-        <Button
-          size="small"
-          color="blue"
-          content="Ver"
-          onClick={() =>
-            router.push(`/mesa-ayuda/tickets/detalle/${ticket.idIncidencia}`)
-          }
-        />
-      </div>
-    );
-    setContenidoDrawer(
-      <IncidenciaDetalle ticket={detalle[0]} respuestas={correos} />
-    );
-    abrirCerrarDrawer();
-  };
 
   return (
     <>
@@ -254,25 +184,12 @@ export default function TotalIncidencias() {
             color="blue"
             icon="angle left"
             content="Atras"
-            onClick={() => router.push("/mesa-ayuda")}
+            onClick={() => router.back()}
           />
+          <div>
+            <BuscadorTicket />
+          </div>
         </>
-        <div className="btn-navbar between">
-          <Button
-            aria-label="recargar"
-            color="green"
-            icon="sync"
-            onClick={() => onRecargar()}
-          />
-          <Button
-            color="blue"
-            icon="plus"
-            content="Nuevo ticket"
-            onClick={() => registrarIncidencia()}
-            disabled={obtenerPermisos(session.permissions, 31)}
-          />
-          <BuscadorTicket />
-        </div>
       </div>
 
       <Grid columns="equal" style={{ marginTop: "1em" }}>
@@ -295,36 +212,7 @@ export default function TotalIncidencias() {
                     formikFiltros.setFieldValue("estado", data.value)
                   }
                 />
-                <Form.Dropdown
-                  fluid
-                  selection
-                  clearable
-                  name="responsable"
-                  label="Asignado"
-                  aria-label="filtros"
-                  options={responsables}
-                  selectOnBlur={false}
-                  value={formikFiltros.values.responsable}
-                  error={formikFiltros.errors.responsable}
-                  onChange={(_, data) =>
-                    formikFiltros.setFieldValue("responsable", data.value)
-                  }
-                />
-                <Form.Dropdown
-                  fluid
-                  selection
-                  clearable
-                  name="periodo"
-                  label="Periodo"
-                  aria-label="filtros"
-                  options={periodoTicket}
-                  selectOnBlur={false}
-                  value={formikFiltros.values.periodo}
-                  error={formikFiltros.errors.periodo}
-                  onChange={(_, data) =>
-                    formikFiltros.setFieldValue("periodo", data.value)
-                  }
-                />
+
                 <Form.Button
                   fluid
                   width={2}

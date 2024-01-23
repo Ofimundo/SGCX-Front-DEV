@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Table, Modal } from "antd";
-import { Grid, Form } from "semantic-ui-react";
 import { listarContratos } from "../apis";
 import { useSession } from "next-auth/react";
-import { CSVLink, CSVDownload } from "react-csv";
+import { Grid, Form, Button } from "semantic-ui-react";
+import { ExcelFile, ExcelSheet, ExcelColumn } from "react-xlsx-wrapper";
 
 export default function Contratos() {
   const { data: session } = useSession();
@@ -79,11 +79,23 @@ export default function Contratos() {
               value={filtro.toUpperCase()}
               onChange={filtrarPorColumnas}
             />
-            <div style={{ marginTop: "32px" }}>
-              <CSVLink data={contratosFiltro} filename={"Contratos.csv"}>
-                Exportar
-              </CSVLink>
-            </div>
+            <Form.Field>
+              <label>‎ </label>
+              <ExcelFile
+                element={<Button content="Exportar" color="blue" />}
+                filename="Contadores"
+              >
+                <ExcelSheet data={contratosFiltro} name="Contratos">
+                  <ExcelColumn label="Razón Social" value="nombreCliente" />
+                  <ExcelColumn label="Código Cliente" value="codCliente" />
+                  <ExcelColumn
+                    label="Ejecutiva Responsable"
+                    value="ejecutivaResponsable"
+                  />
+                  <ExcelColumn label="Folio Contrato" value="folioContrato" />
+                </ExcelSheet>
+              </ExcelFile>
+            </Form.Field>
           </Form.Group>
         </Form>
 

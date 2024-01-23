@@ -37,7 +37,6 @@ export function ListarEquiposDesconectados({
       sorter: (a, b) => a.nombreCliente.localeCompare(b.nombreCliente),
       ellipsis: true,
     },
-
     {
       title: "Modelo",
       dataIndex: "equipoModelo",

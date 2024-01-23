@@ -4,6 +4,7 @@ import {
   CardPersonalizado,
   DrawerPersonalizado,
   IncidenciaFormulario,
+  BuscadorTicket,
 } from "../components";
 import "moment/locale/es";
 import moment from "moment";
@@ -16,12 +17,11 @@ import {
   calcularMinutos,
 } from "../Function";
 import { Modal, Table, Progress, Tooltip, Spin } from "antd";
-import { Grid, Button, Label, Search, Icon, Dropdown } from "semantic-ui-react";
+import { Grid, Button, Label, Icon, Dropdown } from "semantic-ui-react";
 import {
   resumenTickets,
   resumenCardsTickets,
   listarDetalleTicket,
-  listarTicketFiltrado,
   listarCorreosRespuesta,
   listarTicketsRecientes,
 } from "../apis";
@@ -36,11 +36,9 @@ export default function MesaAyuda() {
   const [recargar, setRecargar] = useState(false);
 
   const [resumen, setResumen] = useState([]);
-  const [ticketsFiltros, setTicketsFiltro] = useState([]);
   const [resumenTarjetas, setResumenTarjetas] = useState([]);
   const [ticketsRecientes, setTicketsRecientes] = useState([]);
 
-  const [filtroTicket, setFiltroTicket] = useState("");
   const [periodoResumen, setPeriodoResumen] = useState("D");
 
   const [tituloDrawer, setTituloDrawer] = useState("");
@@ -169,14 +167,6 @@ export default function MesaAyuda() {
     setResumen(resumenTicket);
   };
 
-  const buscarPorTicket = async (value) => {
-    setFiltroTicket(value);
-    if (value.length >= 3) {
-      const filtro = await listarTicketFiltrado(value, session.id_token);
-      setTicketsFiltro(filtro);
-    }
-  };
-
   const verDetalleTicket = async (ticket) => {
     const detalle = await listarDetalleTicket(
       ticket.idIncidencia,
@@ -222,18 +212,7 @@ export default function MesaAyuda() {
           onClick={() => registrarIncidencia()}
           disabled={obtenerPermisos(session.permissions, 31)}
         />
-        <Search
-          aligned="right"
-          minCharacters={3}
-          value={filtroTicket}
-          placeholder="Buscar tickets"
-          noResultsMessage={"No hay datos"}
-          onResultSelect={(e, { result }) =>
-            router.push(`/mesa-ayuda/tickets/detalle/${result.content}`)
-          }
-          onSearchChange={(e, { value }) => buscarPorTicket(value)}
-          results={ticketsFiltros}
-        />
+        <BuscadorTicket />
       </div>
 
       <Grid columns="equal" stackable>
@@ -241,7 +220,7 @@ export default function MesaAyuda() {
           <Grid.Column>
             <Spin spinning={cargando}>
               <CardPersonalizado
-                link={`/mesa-ayuda/tickets?estado=1,3,4,6,7&periodo=4&responsable=${
+                link={`/mesa-ayuda/tickets?estado=1,3,4,6,7&periodo=5&responsable=${
                   session.user.email.split("@")[0]
                 }`}
                 icono={"hand paper outline"}

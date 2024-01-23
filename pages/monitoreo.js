@@ -182,7 +182,7 @@ export default function Monitoreo() {
           <Grid.Column>
             <Spin spinning={cargando}>
               <CardPersonalizado
-                link={""}
+                link={"/monitoreo/parque"}
                 icono={"print"}
                 color={"teal"}
                 texto={"Parque Registrado"}

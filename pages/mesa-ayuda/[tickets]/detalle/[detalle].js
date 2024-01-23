@@ -9,8 +9,9 @@ import {
   Tabs,
   Button as Btn,
 } from "antd";
-import { Button, Dropdown, Label, Search, Grid } from "semantic-ui-react";
+import { Button, Dropdown, Label, Grid } from "semantic-ui-react";
 import {
+  BuscadorTicket,
   AsignarFormulario,
   ArchivoDescargable,
   DrawerPersonalizado,
@@ -23,7 +24,6 @@ import {
   actualizarTicket,
   descargarDocumentos,
   listarDetalleTicket,
-  listarTicketFiltrado,
   listarHistorialTicket,
   listarCorreosRespuesta,
   obtenerSiguienteTicket,
@@ -53,9 +53,6 @@ export default function Tickets() {
   const [ticketDetalle, setTicketDetalle] = useState([]);
   const [correosRespuesta, setCorreosRespuestas] = useState([]);
 
-  const [filtroTicket, setFiltroTicket] = useState("");
-  const [ticketsFiltros, setTicketsFiltro] = useState([]);
-
   const [tituloDrawer, setTituloDrawer] = useState("");
   const [tamañoDrawer, setTamañoDrawer] = useState("large");
   const [mostrarDrawer, setMostrarDrawer] = useState(false);
@@ -70,13 +67,11 @@ export default function Tickets() {
         session.id_token
       );
       setTicketDetalle(ticket);
-      /*
       const adjuntos = await listarDocumentos(
         router.query.detalle,
         session.id_token
       );
       setAdjuntos(adjuntos);
-        */
       const historial = await listarHistorialTicket(
         router.query.detalle,
         2,
@@ -148,14 +143,6 @@ export default function Tickets() {
         title: "Ups, algo salió mal",
         content: error.message,
       });
-    }
-  };
-
-  const buscarPorTicket = async (value) => {
-    setFiltroTicket(value);
-    if (value.length >= 3) {
-      const filtro = await listarTicketFiltrado(value, session.id_token);
-      setTicketsFiltro(filtro);
     }
   };
 
@@ -293,13 +280,10 @@ export default function Tickets() {
                 content="Derivar Ofitec"
                 icon="print"
                 onClick={() => ingresarTicketServicio()}
-                /*
                 disabled={habilitarOpciones(
                   ticketDetalle[0]?.idUltimoEstado,
                   3
                 )}
-                */
-                disabled={true}
               />
               <Dropdown.Item
                 content="Resolver"
@@ -343,18 +327,7 @@ export default function Tickets() {
             onClick={() => registrarIncidencia()}
             disabled={obtenerPermisos(session.permissions, 31)}
           />
-          <Search
-            aligned="right"
-            minCharacters={3}
-            value={filtroTicket}
-            placeholder="Buscar tickets"
-            noResultsMessage={"No hay datos"}
-            onResultSelect={(e, { result }) =>
-              router.push(`/mesa-ayuda/tickets/detalle/${result.content}`)
-            }
-            onSearchChange={(e, { value }) => buscarPorTicket(value)}
-            results={ticketsFiltros}
-          />
+          <BuscadorTicket />
         </div>
       </div>
 
@@ -444,7 +417,35 @@ export default function Tickets() {
         <Descriptions.Item label={<Text strong>Telefóno / Celular</Text>}>
           {ticketDetalle[0]?.contactoFono}
         </Descriptions.Item>
+
+        <Descriptions.Item span={3}></Descriptions.Item>
+
+        <Descriptions.Item label={<Text strong>Adjuntos</Text>} span={3}>
+          <div className="ctn-scroll-x">
+            <div
+              style={{
+                display: "flex",
+                gap: "1em",
+                width: "10px",
+              }}
+            >
+              {adjuntos.length
+                ? adjuntos.map((item) => (
+                    <ArchivoDescargable
+                      key={item.indice}
+                      icono={"file image outline"}
+                      nombre={item.nombre}
+                      tamaño={item.tamaño}
+                      evento={abrirDocumentos}
+                    />
+                  ))
+                : null}
+            </div>
+          </div>
+        </Descriptions.Item>
       </Descriptions>
+
+      <Descriptions.Item span={3}></Descriptions.Item>
 
       <Grid columns={"equal"} style={{ marginTop: "1em" }} stackable>
         <Grid.Row>

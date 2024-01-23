@@ -66,6 +66,13 @@
     max-height: 50vh !important;
     overflow-y: auto;
     scrollbar-gutter: stable;
+    width: 300px;
+  }
+  @media (width <= 465px) {
+    width: 100%;
+    .ui.input {
+      width: 100%;
+    }
   }
 }
 /*FACTURACION*/
@@ -177,6 +184,11 @@
     border-radius: 0 0 10px 10px;
   }
 }
+/*BADGE*/
+.ant-badge-status-processing {
+  width: 0.75em !important;
+  height: 0.75em !important;
+}
 
 /* SIDEBAR */
 .antd-menu-logo {
@@ -249,7 +261,13 @@
 .antd-menu::-webkit-scrollbar-thumb:active {
   background-color: transparent;
 }
+.ant-popover-inner {
+  width: 350px;
 
+  @media (width <= 465px) {
+    width: 260px;
+  }
+}
 /* SEMANTIC UI REACT */
 .ui.card {
   border-radius: 0 !important;

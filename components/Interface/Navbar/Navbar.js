@@ -1,25 +1,54 @@
 import React, { useState, useEffect } from "react";
-import { Badge, Avatar, Dropdown, Popover, Typography, List } from "antd";
+import "moment/locale/es";
+import moment from "moment";
+import io from "socket.io-client";
+import { Badge, Popover, List } from "antd";
+import { useRouter } from "next/navigation";
 import { Menu, Icon } from "semantic-ui-react";
 import { signOut, useSession } from "next-auth/react";
+import { notificacionesUsuario, notificacionesActualizar } from "../../../apis";
 import styles from "./Navbar.module.css";
-import { BellOutlined } from "@ant-design/icons";
-
-import io from "socket.io-client";
-const socket = io("http://127.0.0.1:8081");
 
 export function Navbar() {
+  const router = useRouter();
   const { data: session, status } = useSession();
-
-  const [alertas, setAlertas] = useState(0);
+  const [recargar, setRecargar] = useState(false);
   const [notificaciones, setNotificaciones] = useState([]);
 
+  const onRecargar = () => setRecargar((prev) => !prev);
+
+  const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
+    extraHeaders: {
+      "Access-Control-Allow-Origin": "*",
+    },
+    ackTimeout: 10000,
+    retries: 3,
+  });
+
   useEffect(() => {
-    socket.on("message_response", (msg) => {
-      setAlertas(1);
-      setNotificaciones(msg);
+    socket.on("notificacion", (msg) => {
+      onRecargar();
     });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await notificacionesUsuario(session.id_token);
+        setNotificaciones(response);
+      } catch (error) {
+        setNotificaciones([]);
+      }
+    })();
+  }, [recargar]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const eventoNotificacion = async (id, url) => {
+    await notificacionesActualizar(id, session.id_token);
+    if (url) router.push(url);
+    //else router.refresh();
+    else alert("Sin eventos asociados");
+    onRecargar();
+  };
 
   return (
     <Menu borderless className={styles.menu}>
@@ -30,14 +59,38 @@ export function Navbar() {
           ) : null}
         </Menu.Item>
 
-        <Menu.Item onClick={() => setAlertas(0)}>
+        <Menu.Item onClick={() => null}>
           <Popover
-            content={notificaciones}
             title="Notificaciones"
-            trigger="click"
             placement="bottomRight"
+            trigger={"click"}
+            content={
+              <div className="ctn-scroll" style={{ height: "350px" }}>
+                <List
+                  size="small"
+                  dataSource={notificaciones}
+                  renderItem={(item, index) => (
+                    <List.Item
+                      key={item.id}
+                      className={styles.notificaciones}
+                      onClick={() => eventoNotificacion(item.id, item.url)}
+                    >
+                      <List.Item.Meta
+                        title={item.mensaje}
+                        description={moment
+                          .utc(item.fechaCreacion)
+                          .format("DD MMM [a las] HH:mm")}
+                      />
+                      <div>
+                        {!item.leida ? <Badge status="processing" /> : null}
+                      </div>
+                    </List.Item>
+                  )}
+                />
+              </div>
+            }
           >
-            <Badge count={alertas}>
+            <Badge count={notificaciones.filter((item) => !item.leida).length}>
               <Icon
                 name="bell outline"
                 size="large"
@@ -53,17 +106,3 @@ export function Navbar() {
     </Menu>
   );
 }
-
-/*
-<List
-  style={{ width: "300px" }}
-  size="small"
-  dataSource={notificaciones}
-  renderItem={(item, index) => (
-    <List.Item>
-      <List.Item.Meta title={item} description="Ant Design" />
-    </List.Item>
-  )}
-  
-/>
-*/

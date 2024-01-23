@@ -102,27 +102,6 @@ export default function SeguimientoHabilitacion() {
     }
   };
 
-  const verDetalleMaquina = async (maquina) => {
-    setTamañoDrawer("default");
-    setTituloDrawer(<>Impresora N° {maquina.indice}</>);
-    setContenidoDrawer(
-      <>
-        <Descriptions bordered layout="vertical" column={1} size="small">
-          <Descriptions.Item label={<strong>Contacto </strong>}>
-            {maquina.nombreContacto}
-          </Descriptions.Item>
-          <Descriptions.Item label={<strong>Teléfono / Celular</strong>}>
-            {maquina.fonoContacto}
-          </Descriptions.Item>
-          <Descriptions.Item label={<strong>Email</strong>} span={2}>
-            {maquina.emailContacto}
-          </Descriptions.Item>
-        </Descriptions>
-      </>
-    );
-    abrirCerrarDrawer();
-  };
-
   const asignarContrato = (contrato) => {
     formikContrato.setFieldValue("folioContrato", contrato);
     formikContrato.handleSubmit();
@@ -213,7 +192,6 @@ export default function SeguimientoHabilitacion() {
               contrato={contrato}
               contador={fechasActualizadas}
               actualizarFechas={actualizarFechas}
-              verDetalleMaquina={verDetalleMaquina}
               actualizarRegistros={actualizarRegistros}
             />
           </Grid.Column>

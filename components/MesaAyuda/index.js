@@ -4,3 +4,4 @@ export * from "./IncidenciaFormulario";
 export * from "./TicketServicioFormulario";
 export * from "./GraficoAnilloMDA";
 export * from "./IncidenciaDetalle";
+export * from "./BuscadorTicket";

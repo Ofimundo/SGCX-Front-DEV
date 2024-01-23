@@ -16,6 +16,7 @@ import {
   AgregarEditarUsuarios,
   CrearUsuarioFormulario,
 } from "../components";
+import { EnviarNotificaciones } from "../modules";
 import { Tab } from "semantic-ui-react";
 
 export default function Usuarios() {
@@ -143,6 +144,18 @@ export default function Usuarios() {
             mostrarFuncionPerfil={mostrarFuncionPerfil}
             mostrarPerfilUsuario={mostrarPerfilUsuario}
           />
+        </Tab.Pane>
+      ),
+    },
+    {
+      menuItem: {
+        key: "notifaciones",
+        icon: "bell",
+        content: "Notificaciones",
+      },
+      render: () => (
+        <Tab.Pane>
+          <EnviarNotificaciones />
         </Tab.Pane>
       ),
     },

@@ -6,6 +6,7 @@ export * from "./mesaAyuda";
 export * from "./despachos";
 export * from "./contratos";
 export * from "./monitoreo";
+export * from "./encuestas";
 export * from "./facturacion";
 export * from "./controlAllIn";
 export * from "./modeloAtencion";

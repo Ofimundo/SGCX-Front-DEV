@@ -11,7 +11,6 @@ export function ListarEquipos({
   cargando,
   contrato,
   actualizarFechas,
-  verDetalleMaquina,
   actualizarRegistros,
 }) {
   const { data: session } = useSession();
@@ -270,11 +269,6 @@ export function ListarEquipos({
               </Grid>
             </div>
           )}
-          onRow={(record, rowIndex) => {
-            return {
-              onClick: () => verDetalleMaquina(record),
-            };
-          }}
         />
       </div>
     </>
